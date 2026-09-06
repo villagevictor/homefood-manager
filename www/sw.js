@@ -1,6 +1,6 @@
-const CACHE_NAME = "homefood-manager-v1";
+const CACHE_NAME="homefood-manager-v2";
 
-const FILES_TO_CACHE = [
+const FILES=[
     "./",
     "./index.html",
     "./manifest.json",
@@ -8,18 +8,28 @@ const FILES_TO_CACHE = [
     "./js/app.js"
 ];
 
-self.addEventListener("install", event => {
+self.addEventListener("install",event=>{
     event.waitUntil(
-        caches.open(CACHE_NAME)
-            .then(cache => cache.addAll(FILES_TO_CACHE))
+        caches.open(CACHE_NAME).then(cache=>cache.addAll(FILES))
     );
 });
 
-self.addEventListener("fetch", event => {
+self.addEventListener("activate",event=>{
+    event.waitUntil(
+        caches.keys().then(keys=>
+            Promise.all(
+                keys
+                .filter(k=>k!==CACHE_NAME)
+                .map(k=>caches.delete(k))
+            )
+        )
+    );
+});
+
+self.addEventListener("fetch",event=>{
     event.respondWith(
-        caches.match(event.request)
-            .then(response => {
-                return response || fetch(event.request);
-            })
+        caches.match(event.request).then(
+            response=>response || fetch(event.request)
+        )
     );
 });
