@@ -1552,7 +1552,7 @@ function renderSettings(el){
             </div>
 
             <p style="margin-top:10px;color:#64748b">
-                HomeFood Manager V1.1<br>
+                HomeFood Manager V1<br>
                 Customer → Order → Credit → Payment → Balance → Reports
             </p>
 
