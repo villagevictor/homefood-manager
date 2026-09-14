@@ -1,0 +1,6 @@
+{
+  "name": "HomeFood Manager",
+  "description": "Complete Progressive Web App for food businesses to manage orders, customers, menu items, payments, debt ledger, expenses, and financial reports.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
