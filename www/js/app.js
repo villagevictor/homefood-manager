@@ -902,6 +902,15 @@ function renderOrders(el){
                             </option>
 
                         </select>
+<div class="form-group">
+    <label for="orderNotes">Order Notes</label>
+    <textarea
+        id="orderNotes"
+        rows="3"
+        placeholder="Example: No onion, extra shiro, delivery, special request..."
+    ></textarea>
+</div>
+
 
                     </div>
 
@@ -1188,6 +1197,9 @@ function updatePaymentField(){
 }
 
 function saveOrder(e){
+const notesEl = document.getElementById("orderNotes");
+const notes = notesEl ? notesEl.value.trim() : "";
+
 
     e.preventDefault();
 
