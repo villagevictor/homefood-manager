@@ -1,51 +1,11 @@
-const KEY = "homefood_manager_state_v1";
+const KEY = "homefood_manager_state_v2";
 
 const defaultState = {
-    customers: [
-        {
-            id:1,
-            name:"Abel",
-            phone:"0911000000",
-            type:"Credit",
-            creditLimit:2000
-        },
-        {
-            id:2,
-            name:"Miki",
-            phone:"0922000000",
-            type:"Regular",
-            creditLimit:0
-        },
-        {
-            id:3,
-            name:"Sara",
-            phone:"0933000000",
-            type:"Credit",
-            creditLimit:3000
-        }
-    ],
+    customers: [],
 
-    menu: [
-        {id:1,name:"Shiro",category:"Food",price:120,available:true},
-        {id:2,name:"Firfir",category:"Food",price:100,available:true},
-        {id:3,name:"Tibs",category:"Food",price:250,available:true},
-        {id:4,name:"Pasta",category:"Food",price:150,available:true},
-        {id:5,name:"Rice",category:"Food",price:150,available:true},
-        {id:6,name:"Tea",category:"Drink",price:30,available:true},
-        {id:7,name:"Water",category:"Drink",price:25,available:true}
-    ],
+    menu: [],
 
-    orders: [
-        {
-            id:1,
-            customerId:1,
-            total:325,
-            paid:0,
-            credit:325,
-            status:"Credit",
-            date:new Date().toISOString()
-        }
-    ],
+    orders: [],
 
     payments: [],
 
@@ -351,56 +311,134 @@ function renderDashboard(el){
 
 function renderRecentOrders(){
 
-    const rows=state.orders.slice(-8).reverse();
+    const rows =
+        state.orders
+            .slice(-8)
+            .reverse();
+
 
     if(!rows.length){
-        return `<div class="empty">No orders yet.</div>`;
+
+        return `
+            <div class="empty">
+                No orders yet.
+            </div>
+        `;
+
     }
 
+
     return `
-    <div class="table-wrap">
-    <table>
-        <thead>
-            <tr>
-                <th>Customer</th>
-                <th>Total</th>
-                <th>Paid</th>
-                <th>Credit</th>
-                <th>Status</th>
-            </tr>
-        </thead>
 
-        <tbody>
+        <div class="table-wrap">
 
-        ${rows.map(o=>`
+            <table>
 
-            <tr>
+                <thead>
 
-                <td>${customerName(o.customerId)}</td>
+                    <tr>
 
-                <td>${money(o.total)}</td>
+                        <th>
+                            Customer
+                        </th>
 
-                <td>${money(o.paid)}</td>
+                        <th>
+                            Date
+                        </th>
 
-                <td>${money(o.credit)}</td>
+                        <th>
+                            Meal
+                        </th>
 
-                <td>
-                    <span class="badge ${
-                        o.status==="Credit"
-                        ?"badge-orange"
-                        :"badge-green"
-                    }">
-                        ${o.status}
-                    </span>
-                </td>
+                        <th>
+                            Total
+                        </th>
 
-            </tr>
+                        <th>
+                            Paid
+                        </th>
 
-        `).join("")}
+                        <th>
+                            Credit
+                        </th>
 
-        </tbody>
-    </table>
-    </div>
+                        <th>
+                            Status
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                ${rows.map(o=>`
+
+                    <tr>
+
+                        <td>
+                            ${customerName(
+                                o.customerId
+                            )}
+                        </td>
+
+
+                        <td>
+                            ${o.date || "-"}
+                        </td>
+
+
+                        <td>
+
+                            <span class="badge">
+
+                                ${o.meal || "-"}
+
+                            </span>
+
+                        </td>
+
+
+                        <td>
+                            ${money(o.total)}
+                        </td>
+
+
+                        <td>
+                            ${money(o.paid)}
+                        </td>
+
+
+                        <td>
+                            ${money(o.credit)}
+                        </td>
+
+
+                        <td>
+
+                            <span class="badge ${
+                                o.status==="Credit"
+                                ?"badge-orange"
+                                :"badge-green"
+                            }">
+
+                                ${o.status}
+
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+                `).join("")}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
     `;
 }
 
@@ -408,7 +446,9 @@ function renderCustomers(el){
 
     el.innerHTML=`
 
-        <div class="page-title">Customers</div>
+        <div class="page-title">
+            Customers
+        </div>
 
         <div class="page-subtitle">
             Manage customers and credit accounts
@@ -427,33 +467,88 @@ function renderCustomers(el){
                 <div class="form-grid">
 
                     <div class="field">
-                        <label>Full Name</label>
-                        <input id="customerName" required>
+
+                        <label>
+                            Name
+                        </label>
+
+                        <input
+                            id="customerName"
+                            type="text"
+                            placeholder="Customer name"
+                            autocomplete="name"
+                            required>
+
                     </div>
 
-                    <div class="field">
-                        <label>Phone</label>
-                        <input id="customerPhone">
-                    </div>
 
                     <div class="field">
-                        <label>Customer Type</label>
+
+                        <label>
+                            Phone
+                        </label>
+
+                        <input
+                            id="customerPhone"
+                            type="tel"
+                            placeholder="09XXXXXXXX"
+                            autocomplete="tel">
+
+                    </div>
+
+
+                    <div class="field">
+
+                        <label>
+                            Customer Type
+                        </label>
+
                         <select id="customerType">
-                            <option>Regular</option>
-                            <option>Credit</option>
-                            <option>Company</option>
+
+                            <option value="Regular">
+                                Regular
+                            </option>
+
+                            <option value="Credit">
+                                Credit
+                            </option>
+
+                            <option value="Company">
+                                Company
+                            </option>
+
                         </select>
+
                     </div>
 
+
                     <div class="field">
-                        <label>Credit Limit</label>
-                        <input id="customerLimit" type="number" value="0">
+
+                        <label>
+                            Credit Limit
+                        </label>
+
+                        <input
+                            id="customerLimit"
+                            type="number"
+                            min="0"
+                            step="0.01"
+                            value="0"
+                            placeholder="0">
+
                     </div>
+
 
                     <div class="full actions">
-                        <button class="primary-btn">
+
+                        <button
+                            type="submit"
+                            class="primary-btn">
+
                             Add Customer
+
                         </button>
+
                     </div>
 
                 </div>
@@ -462,57 +557,114 @@ function renderCustomers(el){
 
         </div>
 
+
         <div class="section">
 
             <div class="section-header">
+
                 <div class="section-title">
-                    Customer List (${state.customers.length})
+
+                    Customer List
+                    (${state.customers.length})
+
                 </div>
+
             </div>
+
 
             <div class="table-wrap">
 
-            <table>
+                <table>
 
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Phone</th>
-                        <th>Type</th>
-                        <th>Balance</th>
-                    </tr>
-                </thead>
+                    <thead>
 
-                <tbody>
+                        <tr>
 
-                ${state.customers.map(c=>`
+                            <th>Name</th>
 
-                    <tr>
+                            <th>Phone</th>
 
-                        <td><strong>${c.name}</strong></td>
+                            <th>Type</th>
 
-                        <td>${c.phone || "-"}</td>
+                            <th>Credit Limit</th>
 
-                        <td>
-                            <span class="badge">
-                                ${c.type}
-                            </span>
-                        </td>
+                            <th>Balance</th>
 
-                        <td class="${
-                            customerBalance(c.id)>0
-                            ?"stat-orange":"stat-green"
-                        }">
-                            ${money(customerBalance(c.id))}
-                        </td>
+                        </tr>
 
-                    </tr>
+                    </thead>
 
-                `).join("")}
 
-                </tbody>
+                    <tbody>
 
-            </table>
+                    ${
+                        state.customers.length
+
+                        ? state.customers.map(c=>`
+
+                            <tr>
+
+                                <td>
+                                    <strong>
+                                        ${c.name}
+                                    </strong>
+                                </td>
+
+                                <td>
+                                    ${c.phone || "-"}
+                                </td>
+
+                                <td>
+
+                                    <span class="badge">
+                                        ${c.type}
+                                    </span>
+
+                                </td>
+
+                                <td>
+                                    ${money(c.creditLimit || 0)}
+                                </td>
+
+                                <td class="${
+                                    customerBalance(c.id)>0
+                                    ?"stat-orange"
+                                    :"stat-green"
+                                }">
+
+                                    ${money(
+                                        customerBalance(c.id)
+                                    )}
+
+                                </td>
+
+                            </tr>
+
+                        `).join("")
+
+                        : `
+
+                            <tr>
+
+                                <td colspan="5">
+
+                                    <div class="empty">
+
+                                        No customers yet.
+                                        Add your first customer above.
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                        `
+                    }
+
+                    </tbody>
+
+                </table>
 
             </div>
 
@@ -524,38 +676,155 @@ function addCustomer(e){
 
     e.preventDefault();
 
+    const name =
+        document.getElementById(
+            "customerName"
+        ).value.trim();
+
+    const phone =
+        document.getElementById(
+            "customerPhone"
+        ).value.trim();
+
+    const type =
+        document.getElementById(
+            "customerType"
+        ).value;
+
+    const creditLimit =
+        Number(
+            document.getElementById(
+                "customerLimit"
+            ).value || 0
+        );
+
+    if(!name){
+
+        toast("Enter customer name");
+
+        return;
+    }
+
+    if(creditLimit < 0){
+
+        toast("Credit limit cannot be negative");
+
+        return;
+    }
+
     state.customers.push({
 
         id:Date.now(),
 
-        name:document.getElementById("customerName").value,
+        name:name,
 
-        phone:document.getElementById("customerPhone").value,
+        phone:phone,
 
-        type:document.getElementById("customerType").value,
+        type:type,
 
-        creditLimit:Number(
-            document.getElementById("customerLimit").value||0
-        )
+        creditLimit:creditLimit,
+
+        createdAt:new Date().toISOString()
 
     });
 
     saveState();
 
-    toast("Customer added successfully");
+    toast(
+        "Customer added successfully"
+    );
 
-    renderCustomers(document.getElementById("content"));
+    renderCustomers(
+        document.getElementById("content")
+    );
 }
 
 function renderOrders(el){
 
+    if(!state.customers.length){
+
+        el.innerHTML=`
+
+            <div class="page-title">
+                New Order
+            </div>
+
+            <div class="section">
+
+                <div class="empty">
+
+                    <h3>No customers yet</h3>
+
+                    <p>
+                        Add a customer first before
+                        creating an order.
+                    </p>
+
+                    <button
+                        class="primary-btn"
+                        onclick="showPage('customers')">
+
+                        Add Customer
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        `;
+
+        return;
+    }
+
+
+    if(!state.menu.length){
+
+        el.innerHTML=`
+
+            <div class="page-title">
+                New Order
+            </div>
+
+            <div class="section">
+
+                <div class="empty">
+
+                    <h3>No menu items yet</h3>
+
+                    <p>
+                        Add food or drinks to the Menu
+                        before creating an order.
+                    </p>
+
+                    <button
+                        class="primary-btn"
+                        onclick="showPage('menu')">
+
+                        Add Food / Drink
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        `;
+
+        return;
+    }
+
+
     el.innerHTML=`
 
-        <div class="page-title">New Order</div>
+        <div class="page-title">
+            New Order
+        </div>
 
         <div class="page-subtitle">
             Record food consumed by a customer
         </div>
+
 
         <div class="section">
 
@@ -563,34 +832,101 @@ function renderOrders(el){
 
                 <div class="form-grid">
 
-                    <div class="field">
-                        <label>Customer</label>
 
-                        <select id="orderCustomer" required>
+                    <div class="field">
+
+                        <label>
+                            Customer
+                        </label>
+
+                        <select
+                            id="orderCustomer"
+                            required>
 
                             <option value="">
                                 Select customer
                             </option>
 
                             ${state.customers.map(c=>`
+
                                 <option value="${c.id}">
                                     ${c.name}
                                 </option>
+
                             `).join("")}
 
                         </select>
 
                     </div>
 
-                    <div class="field">
-                        <label>Payment Type</label>
 
-                        <select id="orderPaymentType"
+                    <div class="field">
+
+                        <label>
+                            Date
+                        </label>
+
+                        <input
+                            id="orderDate"
+                            type="date"
+                            value="${today()}"
+                            required>
+
+                    </div>
+
+
+                    <div class="field">
+
+                        <label>
+                            Meal
+                        </label>
+
+                        <select
+                            id="orderMeal"
+                            required>
+
+                            <option value="Breakfast">
+                                Breakfast
+                            </option>
+
+                            <option
+                                value="Lunch"
+                                selected>
+
+                                Lunch
+
+                            </option>
+
+                            <option value="Dinner">
+                                Dinner
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="field">
+
+                        <label>
+                            Payment Type
+                        </label>
+
+                        <select
+                            id="orderPaymentType"
                             onchange="updatePaymentField()">
 
-                            <option value="paid">Paid</option>
-                            <option value="partial">Partial</option>
-                            <option value="credit">Credit</option>
+                            <option value="paid">
+                                Paid
+                            </option>
+
+                            <option value="partial">
+                                Partial
+                            </option>
+
+                            <option value="credit">
+                                Credit
+                            </option>
 
                         </select>
 
@@ -598,51 +934,103 @@ function renderOrders(el){
 
                 </div>
 
-                <div class="section-header" style="margin-top:25px">
-                    <div class="section-title">Food Items</div>
 
-                    <button type="button"
+                <div
+                    class="section-header"
+                    style="margin-top:25px">
+
+                    <div class="section-title">
+                        Food Items
+                    </div>
+
+                    <button
+                        type="button"
                         class="secondary-btn"
                         onclick="addOrderItem()">
+
                         + Add Item
+
                     </button>
+
                 </div>
 
-                <div id="orderItems" class="order-items"></div>
+
+                <div
+                    id="orderItems"
+                    class="order-items">
+                </div>
+
 
                 <div class="summary-box">
 
                     <div class="summary-line">
-                        <span>Total</span>
-                        <strong id="orderTotal">0.00 ETB</strong>
+
+                        <span>
+                            Total
+                        </span>
+
+                        <strong id="orderTotal">
+                            0.00 ETB
+                        </strong>
+
                     </div>
 
-                    <div class="field" style="margin-top:12px">
-                        <label>Paid Amount</label>
-                        <input id="orderPaid"
+
+                    <div
+                        class="field"
+                        style="margin-top:12px">
+
+                        <label>
+                            Paid Amount
+                        </label>
+
+                        <input
+                            id="orderPaid"
                             type="number"
                             value="0"
                             min="0"
+                            step="0.01"
                             oninput="calculateOrder()">
+
                     </div>
 
-                    <div class="summary-line summary-total">
-                        <span>Credit</span>
-                        <strong id="orderCredit">0.00 ETB</strong>
+
+                    <div
+                        class="summary-line summary-total">
+
+                        <span>
+                            Credit
+                        </span>
+
+                        <strong id="orderCredit">
+                            0.00 ETB
+                        </strong>
+
                     </div>
 
                 </div>
 
-                <div class="actions" style="margin-top:15px">
 
-                    <button class="primary-btn">
+                <div
+                    class="actions"
+                    style="margin-top:15px">
+
+                    <button
+                        type="submit"
+                        class="primary-btn">
+
                         Save Order
+
                     </button>
 
-                    <button type="button"
+
+                    <button
+                        type="button"
                         class="secondary-btn"
                         onclick="showPage('dashboard')">
+
                         Cancel
+
                     </button>
 
                 </div>
@@ -651,60 +1039,93 @@ function renderOrders(el){
 
         </div>
 
+
         <div class="section">
 
             <div class="section-header">
+
                 <div class="section-title">
                     Order History
                 </div>
+
             </div>
 
             ${renderRecentOrders()}
 
         </div>
+
     `;
+
 
     addOrderItem();
 }
 
 function addOrderItem(){
 
-    const box=document.getElementById("orderItems");
+    const box =
+        document.getElementById(
+            "orderItems"
+        );
 
-    const row=document.createElement("div");
+    if(!box || !state.menu.length){
 
-    row.className="item-row";
+        return;
+    }
 
-    row.innerHTML=`
+    const row =
+        document.createElement("div");
 
-        <select class="food-select"
+    row.className = "item-row";
+
+    row.innerHTML = `
+
+        <select
+            class="food-select"
             onchange="calculateOrder()">
 
             ${state.menu
-                .filter(m=>m.available)
+                .filter(m=>m.available !== false)
                 .map(m=>`
+
                     <option value="${m.id}">
-                        ${m.name} - ${money(m.price)}
+
+                        ${m.name}
+                        - ${money(m.price)}
+
                     </option>
+
                 `).join("")}
 
         </select>
 
-        <input class="food-qty"
+
+        <input
+            class="food-qty"
             type="number"
             min="1"
+            step="1"
             value="1"
             oninput="calculateOrder()">
 
-        <input class="food-total"
+
+        <input
+            class="food-total"
             readonly
             value="0.00">
 
-        <button type="button"
+
+        <button
+            type="button"
             class="danger-btn"
-            onclick="this.parentElement.remove();calculateOrder()">
+            onclick="
+                this.parentElement.remove();
+                calculateOrder();
+            ">
+
             ×
+
         </button>
+
     `;
 
     box.appendChild(row);
@@ -770,75 +1191,229 @@ function saveOrder(e){
 
     e.preventDefault();
 
-    const customerId=Number(
-        document.getElementById("orderCustomer").value
-    );
 
-    let total=0;
-
-    document.querySelectorAll(".item-row").forEach(row=>{
-
-        const id=Number(
-            row.querySelector(".food-select").value
+    const customerId =
+        Number(
+            document.getElementById(
+                "orderCustomer"
+            ).value
         );
 
-        const qty=Number(
-            row.querySelector(".food-qty").value||0
+
+    const orderDate =
+        document.getElementById(
+            "orderDate"
+        ).value;
+
+
+    const orderMeal =
+        document.getElementById(
+            "orderMeal"
+        ).value;
+
+
+    if(!customerId){
+
+        toast(
+            "Select a customer"
         );
 
-        const item=state.menu.find(m=>m.id===id);
-
-        if(item) total+=item.price*qty;
-
-    });
-
-    if(!customerId || total<=0){
-        toast("Select customer and food items");
         return;
     }
 
-    const type=document.getElementById("orderPaymentType").value;
 
-    let paid=Number(
-        document.getElementById("orderPaid").value||0
-    );
+    if(!orderDate){
 
-    if(type==="paid"){
-        paid=total;
+        toast(
+            "Select order date"
+        );
+
+        return;
     }
 
-    if(type==="credit"){
-        paid=0;
+
+    if(!orderMeal){
+
+        toast(
+            "Select meal"
+        );
+
+        return;
     }
 
-    paid=Math.min(paid,total);
 
-    const credit=total-paid;
+    let total = 0;
 
-    state.orders.push({
+    const items = [];
+
+
+    document
+        .querySelectorAll(".item-row")
+        .forEach(row=>{
+
+            const select =
+                row.querySelector(
+                    ".food-select"
+                );
+
+            const qtyInput =
+                row.querySelector(
+                    ".food-qty"
+                );
+
+
+            if(!select || !qtyInput){
+
+                return;
+            }
+
+
+            const id =
+                Number(select.value);
+
+
+            const qty =
+                Number(
+                    qtyInput.value || 0
+                );
+
+
+            const item =
+                state.menu.find(
+                    m=>Number(m.id)===id
+                );
+
+
+            if(item && qty > 0){
+
+                const lineTotal =
+                    Number(item.price) * qty;
+
+
+                total += lineTotal;
+
+
+                items.push({
+
+                    menuItemId:item.id,
+
+                    name:item.name,
+
+                    category:item.category,
+
+                    unitPrice:Number(item.price),
+
+                    quantity:qty,
+
+                    total:lineTotal
+
+                });
+
+            }
+
+        });
+
+
+    if(!items.length || total <= 0){
+
+        toast(
+            "Add at least one food item"
+        );
+
+        return;
+    }
+
+
+    const type =
+        document.getElementById(
+            "orderPaymentType"
+        ).value;
+
+
+    let paid =
+        Number(
+            document.getElementById(
+                "orderPaid"
+            ).value || 0
+        );
+
+
+    if(type === "paid"){
+
+        paid = total;
+
+    }
+
+
+    if(type === "credit"){
+
+        paid = 0;
+
+    }
+
+
+    if(paid < 0){
+
+        paid = 0;
+
+    }
+
+
+    paid =
+        Math.min(
+            paid,
+            total
+        );
+
+
+    const credit =
+        Math.max(
+            0,
+            total - paid
+        );
+
+
+    const order = {
 
         id:Date.now(),
 
-        customerId,
+        customerId:customerId,
 
-        total,
+        items:items,
 
-        paid,
+        total:Number(total),
 
-        credit,
+        paid:Number(paid),
+
+        credit:Number(credit),
 
         status:
-            credit===0
-            ?"Paid"
-            :(paid>0 ?"Partial":"Credit"),
+            credit === 0
+            ? "Paid"
+            : (paid > 0
+                ? "Partial"
+                : "Credit"),
 
-        date:new Date().toISOString()
+        date:orderDate,
 
-    });
+        meal:orderMeal,
+
+        createdAt:
+            new Date().toISOString()
+
+    };
+
+
+    state.orders.push(order);
+
 
     saveState();
 
-    toast("Order saved successfully");
+
+    toast(
+        "Order saved successfully"
+    );
+
 
     showPage("dashboard");
 }
@@ -1128,45 +1703,96 @@ function renderMenu(el){
 
     el.innerHTML=`
 
-        <div class="page-title">Menu</div>
+        <div class="page-title">
+            Menu
+        </div>
 
         <div class="page-subtitle">
-            Food and drink prices
+            Add your own food and drink items
         </div>
+
 
         <div class="section">
 
-            <form onsubmit="addMenuItem(event)">
+            <div class="section-header">
+
+                <div class="section-title">
+                    Add Menu Item
+                </div>
+
+            </div>
+
+
+            <form
+                onsubmit="addMenuItem(event)">
 
                 <div class="form-grid">
 
+
                     <div class="field">
-                        <label>Food / Drink Name</label>
-                        <input id="menuName" required>
+
+                        <label>
+                            Food / Drink Name
+                        </label>
+
+                        <input
+                            id="menuName"
+                            type="text"
+                            placeholder="e.g. Shiro"
+                            required>
+
                     </div>
 
-                    <div class="field">
-                        <label>Category</label>
 
-                        <select id="menuCategory">
-                            <option>Food</option>
-                            <option>Drink</option>
+                    <div class="field">
+
+                        <label>
+                            Category
+                        </label>
+
+                        <select
+                            id="menuCategory">
+
+                            <option value="Food">
+                                Food
+                            </option>
+
+                            <option value="Drink">
+                                Drink
+                            </option>
+
                         </select>
 
                     </div>
 
+
                     <div class="field">
-                        <label>Price</label>
-                        <input id="menuPrice"
+
+                        <label>
+                            Price
+                        </label>
+
+                        <input
+                            id="menuPrice"
                             type="number"
                             min="0"
+                            step="0.01"
+                            placeholder="0.00"
                             required>
+
                     </div>
 
+
                     <div class="full">
-                        <button class="primary-btn">
+
+                        <button
+                            type="submit"
+                            class="primary-btn">
+
                             Add Menu Item
+
                         </button>
+
                     </div>
 
                 </div>
@@ -1175,46 +1801,111 @@ function renderMenu(el){
 
         </div>
 
+
         <div class="section">
+
+            <div class="section-header">
+
+                <div class="section-title">
+
+                    Menu Items
+                    (${state.menu.length})
+
+                </div>
+
+            </div>
+
 
             <div class="table-wrap">
 
-            <table>
+                <table>
 
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Category</th>
-                        <th>Price</th>
-                        <th>Available</th>
-                    </tr>
-                </thead>
+                    <thead>
 
-                <tbody>
+                        <tr>
 
-                ${state.menu.map(m=>`
+                            <th>
+                                Food / Drink Name
+                            </th>
 
-                    <tr>
+                            <th>
+                                Category
+                            </th>
 
-                        <td><strong>${m.name}</strong></td>
+                            <th>
+                                Price
+                            </th>
 
-                        <td>${m.category}</td>
-
-                        <td>${money(m.price)}</td>
-
-                        <td>
-                            <span class="badge badge-green">
+                            <th>
                                 Available
-                            </span>
-                        </td>
+                            </th>
 
-                    </tr>
+                        </tr>
 
-                `).join("")}
+                    </thead>
 
-                </tbody>
 
-            </table>
+                    <tbody>
+
+                    ${
+                        state.menu.length
+
+                        ? state.menu.map(m=>`
+
+                            <tr>
+
+                                <td>
+                                    <strong>
+                                        ${m.name}
+                                    </strong>
+                                </td>
+
+                                <td>
+                                    ${m.category}
+                                </td>
+
+                                <td>
+                                    ${money(m.price)}
+                                </td>
+
+                                <td>
+
+                                    <span
+                                        class="badge badge-green">
+
+                                        Available
+
+                                    </span>
+
+                                </td>
+
+                            </tr>
+
+                        `).join("")
+
+                        : `
+
+                            <tr>
+
+                                <td colspan="4">
+
+                                    <div class="empty">
+
+                                        No food or drinks yet.
+                                        Add your first item above.
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                        `
+                    }
+
+                    </tbody>
+
+                </table>
 
             </div>
 
@@ -1226,25 +1917,82 @@ function addMenuItem(e){
 
     e.preventDefault();
 
+
+    const name =
+        document.getElementById(
+            "menuName"
+        ).value.trim();
+
+
+    const category =
+        document.getElementById(
+            "menuCategory"
+        ).value;
+
+
+    const price =
+        Number(
+            document.getElementById(
+                "menuPrice"
+            ).value || 0
+        );
+
+
+    if(!name){
+
+        toast(
+            "Enter food or drink name"
+        );
+
+        return;
+    }
+
+
+    if(price < 0){
+
+        toast(
+            "Price cannot be negative"
+        );
+
+        return;
+    }
+
+
+    if(price === 0){
+
+        toast(
+            "Enter a valid price"
+        );
+
+        return;
+    }
+
+
     state.menu.push({
 
         id:Date.now(),
 
-        name:document.getElementById("menuName").value,
+        name:name,
 
-        category:document.getElementById("menuCategory").value,
+        category:category,
 
-        price:Number(
-            document.getElementById("menuPrice").value
-        ),
+        price:price,
 
-        available:true
+        available:true,
+
+        createdAt:
+            new Date().toISOString()
 
     });
 
+
     saveState();
 
-    toast("Menu item added");
+
+    toast(
+        "Menu item added successfully"
+    );
+
 
     showPage("menu");
 }
@@ -1552,7 +2300,7 @@ function renderSettings(el){
             </div>
 
             <p style="margin-top:10px;color:#64748b">
-                HomeFood Manager V1<br>
+                HomeFood Manager V1.1<br>
                 Customer → Order → Credit → Payment → Balance → Reports
             </p>
 
